@@ -1,0 +1,9 @@
+# ignore modules and distribution files
+node_modules
+dist
+
+# ignore vscode config and environments
+.vscode
+.env
+.data
+diff.txt
