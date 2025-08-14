@@ -1,7 +1,11 @@
 import { type Dialect, type ModelStatic, Sequelize } from "sequelize";
 import { type ModelConstructor } from "../types/model-constructor.type";
 import { Service, Server, Piece } from "@stexcore/api-engine";
-import UserModel from "../models/user.model";
+import EntityModel from "../models/entity.model";
+import PhoneModel from "../models/phone.model";
+import SessionModel from "../models/session.model";
+import AccountModel from "../models/account.model";
+import EmailModel from "../models/email.model";
 
 /**
  * Declare extensions to Piece class
@@ -104,7 +108,52 @@ export default class DBService extends Service {
         super(server);
 
         // Register models
-        this.registerModel(UserModel);
+        this.registerModel(EntityModel);
+        this.registerModel(PhoneModel);
+        this.registerModel(EmailModel);
+        this.registerModel(SessionModel);
+        this.registerModel(AccountModel);
+
+        const Entity = this.getModel(EntityModel);
+        const Phone = this.getModel(PhoneModel);
+        const Email = this.getModel(EmailModel);
+        const Session = this.getModel(SessionModel);
+        const Account = this.getModel(AccountModel);
+
+
+            // initialize relation
+            // Module.hasMany(RoleModulePermission, { foreignKey: "module_id", sourceKey: "id" });
+            // Role.hasMany(RoleModulePermission, { foreignKey: "role_id", sourceKey: "id" });
+            // Permission.hasMany(RoleModulePermission, { foreignKey: "permission_id", sourceKey: "id" });
+
+            // RoleModulePermission.belongsTo(Module, { foreignKey: "module_id", targetKey: "id" });
+            // RoleModulePermission.belongsTo(Role, { foreignKey: "role_id", targetKey: "id" });
+            // RoleModulePermission.belongsTo(Permission, { foreignKey: "permission_id", targetKey: "id" });
+
+
+            // Role.hasMany(Account, { foreignKey: "role_id", sourceKey: "id" });
+
+
+            // Permission.hasMany(ModulePermission, { foreignKey: "permission_id", sourceKey: "id" });
+            // Module.hasMany(ModulePermission, { foreignKey: "module_id", sourceKey: "id" });
+
+            // ModulePermission.belongsTo(Permission, { foreignKey: "permission_id", targetKey: "id" });
+            // ModulePermission.belongsTo(Module, { foreignKey: "module_id", targetKey: "id" });
+
+            // Permission.belongsToMany(Module, { through: ModulePermission, foreignKey: "permission_id", sourceKey: "id", otherKey: "module_id" });
+            // Module.belongsToMany(Permission, { through: ModulePermission, foreignKey: "module_id", sourceKey: "id", otherKey: "permission_id" });
+            
+            
+            Entity.hasMany(Email, { foreignKey: "entity_id", sourceKey: "id" });
+            Entity.hasMany(Phone, { foreignKey: "entity_id", sourceKey: "id" });
+            Entity.hasOne(Account, { foreignKey: "entity_id", sourceKey: "id" })
+
+            Email.belongsTo(Entity, { foreignKey: "entity_id", targetKey: "id" });
+
+            Phone.belongsTo(Entity, { foreignKey: "entity_id", targetKey: "id" });
+
+            Account.belongsTo(Entity, { foreignKey: "entity_id", targetKey: "id" });
+            // Account.belongsTo(Role, { foreignKey: "role_id", targetKey: "id" });
 
         // Syncronize connection
         this.connection.sync({ });
